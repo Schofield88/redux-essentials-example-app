@@ -5,6 +5,17 @@ const initialState = [
   { id: '2', title: 'Second Post', content: 'More text' },
 ];
 
-const postsSlice = createSlice({ name: 'posts', initialState, reducers: {} });
+const postsSlice = createSlice({
+  name: 'posts',
+  initialState,
+  reducers: {
+    addPost: (state, action) => {
+      state.push(action.payload);
+    },
+  },
+});
 
-export const { reducer: postsReducer } = postsSlice;
+const { addPost } = postsSlice.actions;
+const { reducer: postsReducer } = postsSlice;
+
+export { addPost, postsReducer };

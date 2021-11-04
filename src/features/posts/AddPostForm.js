@@ -1,11 +1,22 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { addPost } from './postsSlice';
+import { nanoid } from '@reduxjs/toolkit';
 
 const AddPostForm = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const dispatch = useDispatch();
 
   const onTitleChanged = (e) => setTitle(e.target.value);
   const onContentChanged = (e) => setContent(e.target.value);
+
+  const addNewPost = () => {
+    dispatch(addPost({ id: nanoid, title, content }));
+
+    setTitle('');
+    setContent('');
+  };
 
   return (
     <section>
@@ -26,7 +37,9 @@ const AddPostForm = () => {
           value={content}
           onChange={onContentChanged}
         />
-        <button type="button">Save Post</button>
+        <button type="button" onClick={addNewPost}>
+          Save Post
+        </button>
       </form>
     </section>
   );
