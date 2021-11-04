@@ -1,18 +1,17 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addPost } from './postsSlice';
-import { nanoid } from '@reduxjs/toolkit';
+import { addPost } from './postsRedux/postsSlice';
 
 const AddPostForm = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const dispatch = useDispatch();
 
-  const onTitleChanged = (e) => setTitle(e.target.value);
-  const onContentChanged = (e) => setContent(e.target.value);
+  const onTitleChanged = (event) => setTitle(event.target.value);
+  const onContentChanged = (event) => setContent(event.target.value);
 
   const addNewPost = () => {
-    dispatch(addPost({ id: nanoid, title, content }));
+    dispatch(addPost({ title, content }));
 
     setTitle('');
     setContent('');
