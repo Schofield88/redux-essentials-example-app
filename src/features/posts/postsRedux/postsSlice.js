@@ -1,8 +1,31 @@
 import { createSlice, nanoid } from '@reduxjs/toolkit';
+import { DateTime } from 'luxon';
 
 const initialState = [
-  { id: '1', title: 'First Post!', content: 'Hello!' },
-  { id: '2', title: 'Second Post', content: 'More text' },
+  {
+    id: '1',
+    title: 'First Post!',
+    content: 'Hello!',
+    date: DateTime.now().minus({ weeks: 1 }).toISO(),
+  },
+  {
+    id: '2',
+    title: 'Second Post',
+    content: 'More text',
+    date: DateTime.now().minus({ days: 1 }).toISO(),
+  },
+  {
+    id: '3',
+    title: 'Third Post',
+    content: 'Just a few hours ago',
+    date: DateTime.now().minus({ hours: 3 }).toISO(),
+  },
+  {
+    id: '4',
+    title: 'Fourth Post',
+    content: 'Just a few minutes ago',
+    date: DateTime.now().minus({ minutes: 3 }).toISO(),
+  },
 ];
 
 const postsSlice = createSlice({
@@ -19,7 +42,7 @@ const postsSlice = createSlice({
           title,
           content,
           user: userId,
-          date: new Date().toISOString(),
+          date: DateTime.now().toISO(),
         },
       }),
     },

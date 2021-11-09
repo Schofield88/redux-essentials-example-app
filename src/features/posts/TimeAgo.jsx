@@ -1,5 +1,12 @@
 import { DateTime } from 'luxon';
 
+const timeUnits = {
+  day: 'day',
+  hour: 'hour',
+  minute: 'minute',
+  second: 'second',
+};
+
 const timeWithPlurarisation = (timeUnit, value) => {
   const floorValue = Math.floor(value);
   const sOrNah = floorValue === 1 ? '' : 's';
@@ -8,15 +15,19 @@ const timeWithPlurarisation = (timeUnit, value) => {
 };
 
 const formatNiceTime = (times) => {
-  const { minutes } = times;
+  if (times.days) {
+    return `${timeWithPlurarisation(timeUnits.day, times.days)} ago`;
+  }
 
-  if (minutes < 1) {
+  if (times.hours) {
+    return `${timeWithPlurarisation(timeUnits.hour, times.hours)} ago`;
+  }
+
+  if (times.minutes < 1) {
     return 'Just now...';
   }
 
-  const minutesAgo = timeWithPlurarisation('minute', minutes);
-
-  return `${minutesAgo} ago`;
+  return `${timeWithPlurarisation(timeUnits.minute, times.minutes)} ago`;
 };
 
 const TimeAgo = ({ date }) => {
@@ -32,14 +43,7 @@ const TimeAgo = ({ date }) => {
     'minutes',
   ]);
 
-  const duration = formatNiceTime(someCoolTimes);
-
-  const { days, hours, minutes } = someCoolTimes;
-  console.log('days: ', days);
-  console.log('hours: ', hours);
-  console.log('minutes: ', minutes);
-
-  return <div>{duration}</div>;
+  return <div>{formatNiceTime(someCoolTimes)}</div>;
 };
 
 export { TimeAgo };
