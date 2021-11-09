@@ -7,24 +7,28 @@ const initialState = [
     title: 'First Post!',
     content: 'Hello!',
     date: DateTime.now().minus({ weeks: 1 }).toISO(),
+    reactions: { thumbsUp: 0, hooray: 0 },
   },
   {
     id: '2',
     title: 'Second Post',
     content: 'More text',
     date: DateTime.now().minus({ days: 1 }).toISO(),
+    reactions: { thumbsUp: 0, hooray: 0 },
   },
   {
     id: '3',
     title: 'Third Post',
     content: 'Just a few hours ago',
     date: DateTime.now().minus({ hours: 3 }).toISO(),
+    reactions: { thumbsUp: 0, hooray: 0 },
   },
   {
     id: '4',
     title: 'Fourth Post',
     content: 'Just a few minutes ago',
     date: DateTime.now().minus({ minutes: 3 }).toISO(),
+    reactions: { thumbsUp: 0, hooray: 0 },
   },
 ];
 
@@ -53,10 +57,23 @@ const postsSlice = createSlice({
       existingPost.title = title;
       existingPost.content = content;
     },
+    addReaction: (state, action) => {
+      console.log('action: ', action);
+
+      const { id, name } = action.payload;
+      const existingPost = state.find((post) => post.id === id);
+      console.log('existingPost.reactions: ', existingPost.reactions);
+
+      if (!existingPost.reactions[name]) {
+        existingPost.reactions[name] = 1;
+      } else {
+        existingPost.reactions[name]++;
+      }
+    },
   },
 });
 
-const { addPost, updatePost } = postsSlice.actions;
+const { addPost, updatePost, addReaction } = postsSlice.actions;
 const { reducer: postsReducer } = postsSlice;
 
-export { addPost, updatePost, postsReducer };
+export { addPost, updatePost, addReaction, postsReducer };

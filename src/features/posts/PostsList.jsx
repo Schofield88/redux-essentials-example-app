@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { selectAllPosts } from './postsRedux/postsSelectors';
 import { PostAuthor } from './PostAuthor';
 import { TimeAgo } from './TimeAgo';
+import { ReactionButtons } from './ReactionButton';
 
 const PostsList = () => {
   const posts = useSelector(selectAllPosts);
@@ -16,6 +17,7 @@ const PostsList = () => {
         <article className="post-excerpt" key={post.id}>
           <h3>{post.title}</h3>
           <p className="post-content">{post.content.substring(0, 100)}</p>
+          <ReactionButtons post={post} />
           <PostAuthor userId={post.user} />
           <TimeAgo date={post.date} />
           <Link to={`/posts/${post.id}`} className="button muted-button">
