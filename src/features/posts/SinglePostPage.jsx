@@ -23,10 +23,10 @@ const SinglePostPage = ({ match }) => {
     <section>
       <article className="post">
         <h2>{title}</h2>
-        <p className="post-content">{content}</p>
-        <ReactionButtons post={post} />
         <PostAuthor userId={user} />
         <TimeAgo date={date} />
+        <p className="post-content">{content}</p>
+        <ReactionButtons post={post} />
         <Link to={`/editPost/${id}`} className="button">
           Edit Post
         </Link>

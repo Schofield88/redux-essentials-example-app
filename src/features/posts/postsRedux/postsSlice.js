@@ -1,68 +1,48 @@
-import { createSlice, nanoid } from '@reduxjs/toolkit';
-import { DateTime } from 'luxon';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { client } from '../../../api/client';
 
-const initialState = [
-  {
-    id: '1',
-    title: 'First Post!',
-    content: 'Hello!',
-    date: DateTime.now().minus({ weeks: 1 }).toISO(),
-    reactions: { thumbsUp: 0, hooray: 0 },
-  },
-  {
-    id: '2',
-    title: 'Second Post',
-    content: 'More text',
-    date: DateTime.now().minus({ days: 1 }).toISO(),
-    reactions: { thumbsUp: 0, hooray: 0 },
-  },
-  {
-    id: '3',
-    title: 'Third Post',
-    content: 'Just a few hours ago',
-    date: DateTime.now().minus({ hours: 3 }).toISO(),
-    reactions: { thumbsUp: 0, hooray: 0 },
-  },
-  {
-    id: '4',
-    title: 'Fourth Post',
-    content: 'Just a few minutes ago',
-    date: DateTime.now().minus({ minutes: 3 }).toISO(),
-    reactions: { thumbsUp: 0, hooray: 0 },
-  },
-];
+const requestStatus = {
+  idle: 'idle',
+  pending: 'pending',
+  succeeded: 'succeeded',
+  failed: 'failed',
+};
+
+const initialState = {
+  posts: [],
+  status: requestStatus.idle,
+  error: null,
+};
+
+const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
+  const response = await client.get('/fakeApi/posts');
+  return response.data;
+});
+
+const addNewPost = createAsyncThunk('posts/addNewPost', async (initialPost) => {
+  const { title, content, userId } = initialPost;
+  const response = await client.post('/fakeApi/posts', {
+    title,
+    content,
+    user: userId,
+  });
+  return response.data;
+});
 
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    addPost: {
-      reducer: (state, action) => {
-        state.push(action.payload);
-      },
-      prepare: ({ title, content, userId }) => ({
-        payload: {
-          id: nanoid(),
-          title,
-          content,
-          user: userId,
-          date: DateTime.now().toISO(),
-        },
-      }),
-    },
     updatePost: (state, action) => {
       const { id, title, content } = action.payload;
-      const existingPost = state.find((post) => post.id === id);
+      const existingPost = state.posts.find((post) => post.id === id);
 
       existingPost.title = title;
       existingPost.content = content;
     },
     addReaction: (state, action) => {
-      console.log('action: ', action);
-
       const { id, name } = action.payload;
-      const existingPost = state.find((post) => post.id === id);
-      console.log('existingPost.reactions: ', existingPost.reactions);
+      const existingPost = state.posts.find((post) => post.id === id);
 
       if (!existingPost.reactions[name]) {
         existingPost.reactions[name] = 1;
@@ -71,9 +51,34 @@ const postsSlice = createSlice({
       }
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchPosts.pending, (state) => {
+        state.status = requestStatus.pending;
+      })
+      .addCase(fetchPosts.fulfilled, (state, action) => {
+        state.status = requestStatus.succeeded;
+        state.posts = state.posts.concat(action.payload);
+      })
+      .addCase(fetchPosts.rejected, (state, action) => {
+        state.status = requestStatus.failed;
+        state.error = action.error.message;
+      })
+      .addCase(addNewPost.fulfilled, (state, action) => {
+        state.posts.push(action.payload);
+      });
+  },
 });
 
 const { addPost, updatePost, addReaction } = postsSlice.actions;
 const { reducer: postsReducer } = postsSlice;
 
-export { addPost, updatePost, addReaction, postsReducer };
+export {
+  addPost,
+  addNewPost,
+  updatePost,
+  addReaction,
+  postsReducer,
+  requestStatus,
+  fetchPosts,
+};

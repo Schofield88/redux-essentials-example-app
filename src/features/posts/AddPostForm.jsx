@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addPost } from './postsRedux/postsSlice';
+import { addNewPost, requestStatus } from './postsRedux/postsSlice';
 import { selectAllUsers } from '../users/usersRedux/usersSelectors';
 
 const AddPostForm = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [userId, setUserId] = useState('');
+  const [addRequestStatus, setAddRequestStatus] = useState(requestStatus.idle);
+
   const dispatch = useDispatch();
 
   const users = useSelector(selectAllUsers);
@@ -15,14 +17,25 @@ const AddPostForm = () => {
   const onContentChanged = (event) => setContent(event.target.value);
   const onAuthorChanged = (event) => setUserId(event.target.value);
 
-  const addNewPost = () => {
-    dispatch(addPost({ title, content, userId }));
+  const isSavable =
+    [title, content, userId].every(Boolean) &&
+    addRequestStatus === requestStatus.idle;
 
-    setTitle('');
-    setContent('');
+  const addPost = async () => {
+    if (isSavable) {
+      try {
+        setAddRequestStatus(requestStatus.pending);
+        await dispatch(addNewPost({ title, content, userId })).unwrap();
+        setTitle('');
+        setContent('');
+        setUserId('');
+      } catch (error) {
+        console.error('Failed to save post: ', error);
+      } finally {
+        setAddRequestStatus(requestStatus.idle);
+      }
+    }
   };
-
-  const isSavable = Boolean(title) && Boolean(content) && Boolean(userId);
 
   const usersOptions = users.map((user) => (
     <option key={user.id} value={user.id}>
@@ -54,7 +67,7 @@ const AddPostForm = () => {
           value={content}
           onChange={onContentChanged}
         />
-        <button type="button" onClick={addNewPost} disabled={!isSavable}>
+        <button type="button" onClick={addPost} disabled={!isSavable}>
           Save Post
         </button>
       </form>

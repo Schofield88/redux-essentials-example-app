@@ -5,7 +5,7 @@ const PostAuthor = ({ userId }) => {
   const author = useSelector(selectUser(userId));
   const name = author ? author.name : 'Unknown';
 
-  return <div>{name}</div>;
+  return <span>by {name}</span>;
 };
 
 export { PostAuthor };

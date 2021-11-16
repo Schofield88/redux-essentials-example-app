@@ -32,7 +32,7 @@ const formatNiceTime = (times) => {
 
 const TimeAgo = ({ date }) => {
   if (!date) {
-    return <div>Date Unavailable</div>;
+    return <span>&nbsp;Date Unavailable</span>;
   }
 
   const postCreationDate = DateTime.fromISO(date);
@@ -43,7 +43,7 @@ const TimeAgo = ({ date }) => {
     'minutes',
   ]);
 
-  return <div>{formatNiceTime(someCoolTimes)}</div>;
+  return <span>&nbsp;{formatNiceTime(someCoolTimes)}</span>;
 };
 
 export { TimeAgo };
