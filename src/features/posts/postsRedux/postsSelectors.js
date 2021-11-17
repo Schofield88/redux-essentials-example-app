@@ -3,4 +3,7 @@ const selectAllPosts = (state) => state.posts.posts;
 const selectPostById = (postId) => (state) =>
   state.posts.posts.find((post) => post.id === postId);
 
-export { selectAllPosts, selectPostById };
+const selectPostsByUser = (userId) => (state) =>
+  state.posts.posts.filter((post) => post.user === userId);
+
+export { selectAllPosts, selectPostById, selectPostsByUser };

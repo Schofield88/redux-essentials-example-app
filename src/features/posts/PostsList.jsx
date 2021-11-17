@@ -1,12 +1,10 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectAllPosts } from './postsRedux/postsSelectors';
-import { PostAuthor } from './PostAuthor';
-import { TimeAgo } from './TimeAgo';
-import { ReactionButtons } from './ReactionButton';
 import { useEffect } from 'react';
 import { fetchPosts, requestStatus } from './postsRedux/postsSlice';
 import { Spinner } from '../../components/Spinner';
+import { Post } from './Post';
 
 const PostsWrapper = ({ children }) => {
   return (
@@ -21,13 +19,7 @@ const PostExcerpt = ({ post }) => {
   return (
     <article className="post-excerpt" key={post.id}>
       <h3>{post.title}</h3>
-      <div>
-        <PostAuthor userId={post.user} />
-        <TimeAgo timestamp={post.date} />
-      </div>
-      <p className="post-content">{post.content.substring(0, 97)}...}</p>
-
-      <ReactionButtons post={post} />
+      <Post post={post} content={`${post.content.substring(0, 97)}...`} />
       <Link to={`/posts/${post.id}`} className="button muted-button">
         View Post
       </Link>

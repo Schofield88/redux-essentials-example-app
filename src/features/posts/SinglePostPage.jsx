@@ -1,9 +1,7 @@
+import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectPostById } from './postsRedux/postsSelectors';
-import { Link } from 'react-router-dom';
-import { PostAuthor } from './PostAuthor';
-import { TimeAgo } from './TimeAgo';
-import { ReactionButtons } from './ReactionButton';
+import { Post } from './Post';
 
 const SinglePostPage = ({ match }) => {
   const { postId } = match.params;
@@ -17,17 +15,12 @@ const SinglePostPage = ({ match }) => {
     );
   }
 
-  const { title, content, user, id, date } = post;
-
   return (
     <section>
       <article className="post">
-        <h2>{title}</h2>
-        <PostAuthor userId={user} />
-        <TimeAgo date={date} />
-        <p className="post-content">{content}</p>
-        <ReactionButtons post={post} />
-        <Link to={`/editPost/${id}`} className="button">
+        <h2>{post.title}</h2>
+        <Post post={post} content={post.content} />
+        <Link to={`/editPost/${post.id}`} className="button">
           Edit Post
         </Link>
       </article>
