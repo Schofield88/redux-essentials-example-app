@@ -1,8 +1,12 @@
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectAllPosts } from './postsRedux/postsSelectors';
 import { useEffect } from 'react';
-import { fetchPosts, requestStatus } from './postsRedux/postsSlice';
+import {
+  fetchPosts,
+  requestStatus,
+  selectPostById,
+  selectPostIds,
+} from './postsRedux/postsSlice';
 import { Spinner } from '../../components/Spinner';
 import { Post } from './Post';
 
@@ -15,7 +19,11 @@ const PostsWrapper = ({ children }) => {
   );
 };
 
-const PostExcerpt = ({ post }) => {
+const PostExcerpt = ({ postId }) => {
+  console.log('postId in PostExcerpt: ', postId);
+  const post = useSelector((state) => selectPostById(state, postId));
+  console.log('post: ', post);
+
   return (
     <article className="post-excerpt" key={post.id}>
       <h3>{post.title}</h3>
@@ -29,7 +37,7 @@ const PostExcerpt = ({ post }) => {
 
 const PostsList = () => {
   const dispatch = useDispatch();
-  const posts = useSelector(selectAllPosts);
+  const orderedPostIds = useSelector(selectPostIds);
   const postsStatus = useSelector((state) => state.posts.status);
   const postsError = useSelector((state) => state.posts.error);
 
@@ -43,24 +51,23 @@ const PostsList = () => {
     return <Spinner text={'Loading...'} />;
   }
 
-  if (postsStatus === requestStatus.succeeded) {
-    const orderedPosts = [...posts].sort((a, b) =>
-      b.date.localeCompare(a.date),
-    );
-
-    return (
-      <PostsWrapper>
-        {orderedPosts.map((post) => (
-          <PostExcerpt post={post} key={post.id} />
-        ))}
-      </PostsWrapper>
-    );
-  }
-
   if (postsStatus === requestStatus.failed) {
     return (
       <PostsWrapper>
         <div>{postsError}</div>
+      </PostsWrapper>
+    );
+  }
+
+  if (postsStatus === requestStatus.succeeded) {
+    console.log('orderedPostIds: ', orderedPostIds);
+
+    return (
+      <PostsWrapper>
+        {orderedPostIds.map((postId) => {
+          console.log('postId: ', postId);
+          return <PostExcerpt postId={postId} key={postId} />;
+        })}
       </PostsWrapper>
     );
   }

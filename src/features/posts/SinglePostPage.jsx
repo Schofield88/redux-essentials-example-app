@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { selectPostById } from './postsRedux/postsSelectors';
 import { Post } from './Post';
+import { selectPostById } from './postsRedux/postsSlice';
 
 const SinglePostPage = ({ match }) => {
   const { postId } = match.params;
-  const post = useSelector(selectPostById(postId));
+  const post = useSelector((state) => selectPostById(state, postId));
 
   if (!post) {
     return (
