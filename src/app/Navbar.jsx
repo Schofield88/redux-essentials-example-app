@@ -1,6 +1,26 @@
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchNotifications } from '../features/notificiations/notificationsRedux/notificationsSlice';
+import { selectAllNotifications } from '../features/notificiations/notificationsRedux/notificationsSelectors';
 
 export const Navbar = () => {
+  const dispatch = useDispatch();
+  const notifications = useSelector(selectAllNotifications);
+  console.log('notifications: ', notifications);
+  const numberOfUnreadNotifications = notifications.filter(
+    (notification) => !notification.read,
+  ).length;
+
+  const fetchNewNotifications = () => {
+    dispatch(fetchNotifications());
+  };
+
+  const unreadNotificationsBadge = () => {
+    if (numberOfUnreadNotifications > 0) {
+      return <span className={'badge'}>{numberOfUnreadNotifications}</span>;
+    }
+  };
+
   return (
     <nav>
       <section>
@@ -11,7 +31,13 @@ export const Navbar = () => {
             <div className="navLinks">
               <Link to="/">Posts</Link>
               <Link to="/users">Users</Link>
+              <Link to="/notifications">
+                Notifications {unreadNotificationsBadge()}
+              </Link>
             </div>
+            <button className="button" onClick={fetchNewNotifications}>
+              Refresh Notifications
+            </button>
           </div>
         </div>
       </section>

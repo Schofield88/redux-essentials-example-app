@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { client } from '../../../api/client';
 
-const initialState = [
+const initialUsersState = [
   { id: '0', name: 'Tianna Jenkins' },
   { id: '1', name: 'Kevin Grant' },
   { id: '2', name: 'Madison Price' },
@@ -15,7 +15,7 @@ const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
 
 const usersSlice = createSlice({
   name: 'users',
-  initialState,
+  initialState: initialUsersState,
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchUsers.fulfilled, (state, action) => action.payload);

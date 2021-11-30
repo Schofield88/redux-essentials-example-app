@@ -8,7 +8,7 @@ const requestStatus = {
   failed: 'failed',
 };
 
-const initialState = {
+const initialPostsState = {
   posts: [],
   status: requestStatus.idle,
   error: null,
@@ -31,7 +31,7 @@ const addNewPost = createAsyncThunk('posts/addNewPost', async (initialPost) => {
 
 const postsSlice = createSlice({
   name: 'posts',
-  initialState,
+  initialState: initialPostsState,
   reducers: {
     updatePost: (state, action) => {
       const { id, title, content } = action.payload;
