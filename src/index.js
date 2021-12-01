@@ -6,7 +6,7 @@ import store from './app/store';
 import { Provider } from 'react-redux';
 
 import { worker } from './api/server';
-import { fetchUsers } from './features/users/usersRedux/usersSlice';
+import { fetchUsers } from './features/users/usersRedux/userThunks';
 
 // Start our mock API server
 worker.start({ onUnhandledRequest: 'bypass' });

@@ -2,13 +2,13 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import {
-  fetchPosts,
   requestStatus,
   selectPostById,
   selectPostIds,
 } from './postsRedux/postsSlice';
 import { Spinner } from '../../components/Spinner';
 import { Post } from './Post';
+import { fetchPosts } from './postsRedux/postThunks';
 
 const PostsWrapper = ({ children }) => {
   return (
@@ -20,9 +20,7 @@ const PostsWrapper = ({ children }) => {
 };
 
 const PostExcerpt = ({ postId }) => {
-  console.log('postId in PostExcerpt: ', postId);
   const post = useSelector((state) => selectPostById(state, postId));
-  console.log('post: ', post);
 
   return (
     <article className="post-excerpt" key={post.id}>
@@ -60,12 +58,9 @@ const PostsList = () => {
   }
 
   if (postsStatus === requestStatus.succeeded) {
-    console.log('orderedPostIds: ', orderedPostIds);
-
     return (
       <PostsWrapper>
         {orderedPostIds.map((postId) => {
-          console.log('postId: ', postId);
           return <PostExcerpt postId={postId} key={postId} />;
         })}
       </PostsWrapper>

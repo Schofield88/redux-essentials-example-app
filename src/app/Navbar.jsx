@@ -1,12 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchNotifications } from '../features/notificiations/notificationsRedux/notificationsSlice';
 import { selectAllNotifications } from '../features/notificiations/notificationsRedux/notificationsSelectors';
+import { fetchNotifications } from '../features/notificiations/notificationsRedux/notificationThunks';
 
 export const Navbar = () => {
   const dispatch = useDispatch();
   const notifications = useSelector(selectAllNotifications);
-  console.log('notifications: ', notifications);
   const numberOfUnreadNotifications = notifications.filter(
     (notification) => !notification.read,
   ).length;

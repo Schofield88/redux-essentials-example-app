@@ -1,6 +1,8 @@
-const selectAllUsers = (state) => state.users;
+import { usersAdapter } from './usersSlice';
 
-const selectUser = (userId) => (state) =>
-  state.users.find((user) => user.id === userId);
+const { selectAll: selectAllUsers, selectById: selectUserById } =
+  usersAdapter.getSelectors((state) => state.users);
+
+const selectUser = (userId) => (state) => selectUserById(state, userId);
 
 export { selectAllUsers, selectUser };
